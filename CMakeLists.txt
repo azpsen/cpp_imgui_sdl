@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.23)
-project(slimulation)
+project(cpp_imgui_sdl)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -26,9 +26,13 @@ find_package(SDL2 REQUIRED)
 
 add_library("glad" "glad/src/glad.c")
 
-include_directories("glad/include")
-include_directories(${SDL2_INCLUDE_DIRS})
+include_directories(${CMAKE_PROJECT_NAME} "glad/include")
+include_directories(${CMAKE_PROJECT_NAME} ${SDL2_INCLUDE_DIRS})
 
-add_executable(slimulation main.cpp)
+file(GLOB IMGUI_SOURCES imgui/*.cpp)
+add_library("imgui" STATIC ${IMGUI_SOURCES})
+target_include_directories("imgui" PUBLIC imgui/backends)
 
-target_link_libraries(${CMAKE_PROJECT_NAME} ${OPENGL_gl_LIBRARY} "glad")
+add_executable(${CMAKE_PROJECT_NAME} ${sources})
+
+target_link_libraries(${CMAKE_PROJECT_NAME} ${OPENGL_gl_LIBRARY} "glad" ${SDL2_LIBRARIES} imgui)
